@@ -1,0 +1,1327 @@
+\documentclass[a4paper,11pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{centernot}
+\usepackage{multicol}
+\usepackage{tikz}
+\usepackage{titlesec}
+\usepackage{amsthm}
+\usepackage{stmaryrd}
+\usepackage{listings}
+\usepackage{pifont}
+\usepackage{mdframed}
+\usepackage{forest}
+\usepackage{xfrac}
+\usepackage{caption}
+\usepackage{enumerate}
+
+\renewcommand{\qedsymbol}{\rule{1ex}{1ex}}
+\usetikzlibrary{patterns, angles, quotes}
+\setlength{\parindent}{0em}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\integers}{\mathbb{Z}}
+\newcommand{\naturals}{\mathbb{N}}
+\newcommand{\cnot}{\centernot}
+\newcommand{\dsum}{\displaystyle\sum}
+
+\newcommand{\pf}{$\mathcal{P}_f \hspace{0.3pc}$}
+\newcommand{\pin}{$\mathcal{P}_i \hspace{0.3pc}$}
+
+\newtheoremstyle{break}
+{\topsep}{\topsep}{\hangindent=1em}{}{\bfseries}{:}{\newline}{}
+
+
+\theoremstyle{break}
+\newtheorem{deff}{Definizione}[chapter]
+\newtheorem{es}[deff]{Esempio}
+\newtheorem{teo}[deff]{Teorema}
+\newtheorem{prop}[deff]{Proposizione}
+\newtheorem{eserc}[deff]{Esercizio}
+\newtheorem{lemma}[deff]{Lemma}
+
+
+\setcounter{chapter}{3}
+
+
+\usepackage[top=2.5cm]{geometry}
+
+
+
+\newenvironment{Figure}
+  {\par\medskip\noindent\minipage{\linewidth}}
+  {\endminipage\par\medskip}
+
+\usepackage{titlesec}  
+\titleformat{\chapter}[display]  
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}  
+\titlespacing{\chapter}{0pt}{50pt}{0pt}  
+  
+\begin{document}
+\chapter{Programmazione Lineare Intera}{\normalsize \emph{\bfseries(Versione in \LaTeX \hspace{1mm}a cura di Lorenzo Pace, \texttt{l.pace4@studenti.unipi.it})}}\bigskip
+
+\section{Problemi di PLI}
+Un problema di Programmazione Lineare Intera è un problema di ottimizzazione della stessa forma dei problemi di $PL$, ma con l'aggiunta di un \emph{vincolo di interezza} su tutte le variabili:
+
+\begin{multicols}{2}
+ \begin{center}
+ \begin{tabular}{c c}
+    &$\max c\cdot x$\\
+    
+   $(P_I)$ &$Ax \leq b$\\
+    
+    &$x \in \integers^n$
+
+ \end{tabular}
+
+     \end{center}
+
+ \begin{center}
+   \begin{tabular}{c c}
+    &$\min y\cdot b$\\
+    
+   $(D_I)$ &$yA = c$\\
+    
+    &$y \in \integers^m_+$
+
+ \end{tabular}
+ \end{center}
+
+ 
+\end{multicols}
+
+Chiamiamo $P$ e $Q$ i poliedri individuati rispettivamente dai vincoli di $(P_I)$ e $(D_I)$, e descriviamo le regioni ammissibili $S$ e $T$ dei due problemi:
+
+ \[\begin{aligned}
+&P = \{x \in \reals^n : Ax \leq b\}\\
+ &S = P \cap \integers^n
+   \end{aligned} \hspace{3.8cm}\begin{aligned}
+&Q = \{y \in \reals^m : yA = c, y \geq 0\}\\
+  &T = Q \cap \integers^m
+   \end{aligned}
+\]\smallskip
+
+ \begin{multicols}{2}
+\subsubsection*{Regione ammissibile}
+La regione ammissibile $S$ del problema primale non è quindi un poliedro, come nei problemi di $PL$, ma un \emph{reticolo intero} composto da tutti i punti del poliedro $P$ a componenti intere.
+  \begin{itemize}
+   \item []
+  \end{itemize}
+\begin{Figure}
+ \centering
+\begin{tikzpicture}[scale = .8]
+    \draw[fill = lightgray] (0,2.25) -- (3.5,1.38) -- (3.5,0) -- (0,0)-- cycle;
+    \draw[-latex] (-1.5, 0) -- (5, 0);
+    \draw[-latex] (0,-0.5) -- (0, 3);
+    
+    \draw[gray, dotted] (-1,-0.5) -- (-1, 3);
+    \draw[gray, dotted] (1,-0.5) -- (1, 3);
+    \draw[gray, dotted] (2,-0.5) -- (2, 3);
+    \draw[gray, dotted] (3,-0.5) -- (3, 3);
+    \draw[gray, dotted] (4,-0.5) -- (4, 3);
+    
+    \draw[gray, dotted] (-1.5, 1) -- (5, 1);
+    \draw[gray, dotted] (-1.5, 2) -- (5, 2);
+   
+
+    
+    \node(d)[circle, draw, black, fill, inner sep=1pt] at (0,0) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (1,0) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (2,0) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (3,0) {};
+    
+    \node()[circle, draw, black, fill, inner sep=1pt] at (0,1) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (1,1) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (2,1) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (3,1) {};
+    
+    \node()[circle, draw, black, fill, inner sep=1pt] at (0,2) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (1,2) {};
+    
+    \node(a)[circle, draw, gray, fill, inner sep=1pt] at (0,2.25) {};
+    \node(b)[circle, draw, gray, fill, inner sep=1pt] at (3.5,1.38) {};
+    \node(c)[circle, draw, gray, fill, inner sep=1pt] at (3.5,0) {};
+    
+\end{tikzpicture}
+
+\captionof{figure}{}
+
+\end{Figure}
+
+ \end{multicols}
+
+
+\subsubsection*{Rilassamento continuo}
+
+Se si priva un problema $(P_I)$ di $PLI$ dei suoi vincoli di interezza si ottiene un problema di $PL$ che chiamiamo \emph{rilassamento continuo} di $(P_I)$:
+
+
+
+\begin{multicols}{2}
+ \begin{center}
+ \begin{tabular}{c c}
+    &$\max c\cdot x$\\
+    
+   $(RC_P)$ &$Ax \leq b$\\
+    
+ \end{tabular}
+
+     \end{center}
+
+ \begin{center}
+   \begin{tabular}{c c}
+    &$\min y\cdot b$\\
+    
+   $(RC_D)$ &$yA = c$\\
+    
+    &$y \geq 0$
+
+ \end{tabular}
+ \end{center}
+
+ 
+\end{multicols}
+
+Se $\bar x \in P$ soluzione ottima di $(RC_P)$ è a componenti intere (ossia se $x \in S$) allora si ha che $\bar x$ è soluzione ottima di $(P_I)$ (analogamente con $(RC_D)$).\smallskip
+
+Questa situazione accade sicuramente qualora tutti i vertici di $P$ siano a componenti intere, ossia quando ogni vertice è soluzione di base ammissibile (\emph{proprietà dell'interezza}).
+
+\begin{es}\footnotesize
+ Sia $A$ la matrice di incidenza nodi/archi di un grafo, con $c$ a componenti intere. Allora il poliedro $Q = \{y \in \reals^m : yA = c, y \geq 0\}$ ha la proprietà dell'interezza (in quanto gli indici dei nodi sono ovviamente interi).
+\end{es}
+
+\subsubsection*{Arrotondamento intero}
+Si potrebbe pensare che, data una soluzione ottima $\bar x \in P$ di $RC_P$, allora un opportuno arrotondamento intero delle componenti frazionarie fornisca una soluzione ottima di $(P)$. Questo è falso, come illustra il seguente esempio.
+
+\begin{es}
+\begin{multicols}{2}
+ 
+ 
+
+
+ \[\]
+ \[\begin{aligned}
+    \max \quad & x_1 &+x_2&&&\\
+         & x_1  &      & &\leq&& \sfrac{5}{2}\\
+         & x_1  &+3x_2 & &\leq&& 7\\
+   \end{aligned}
+\]
+
+
+\[         x_1, x_2  \geq 0 \quad
+           x_1, x_2  \in \integers \\\]
+ \begin{itemize}
+  \item []
+  \item []
+ \end{itemize}
+ 
+\begin{center}
+
+
+\begin{tikzpicture}[scale=.9]
+ \draw[-latex] (-.5, 0) -- (4, 0);
+ \draw[-latex] (0, -.5) -- (0, 3.5);
+ \draw[dotted, thick] (-.5, 2.5) -- (4,1);
+ \draw[dotted, thick] (2.5, -.5) -- (2.5,4);
+ \node()[circle, draw, black, fill, inner sep=1pt] at (0,0) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (1,0) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (2,0) {};
+ 
+ \node()[circle, draw, black, fill, inner sep=1pt] at (0,1) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (1,1) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (2,1) {};
+ 
+ \node()[circle, draw, black, fill, inner sep=1pt] at (0,2) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (1,2) {};
+ 
+ \draw [pattern = north east lines, thick](0,0) -- (2,0) -- (2,1) -- (1,2) -- (0,2) -- cycle;
+ 
+ \path [-latex] (2.5, 1.5) edge node[right]{$c$} (3.5, 2.5);
+  \path [-latex] (2.5, 1.5) edge node[right, pos=1]{$A_1$} (3.5, 1.5);
+  \path [-latex] (2.5, 1.5) edge node[above, pos=1]{$A_2$} (2.5 + 1/3, 1.5 + 1);
+ 
+ 
+ \path [-latex] (3, 0) edge node[below right]{$A_4$} (3, -.5);
+ \path [-latex] (0, 3) edge node[above left]{$A_3$} (-.5, 3);
+\end{tikzpicture}
+\captionof{figure}{}
+\end{center}
+\end{multicols}           
+\end{es}
+Notiamo che la soluzione del rilassamento continuo è $(\sfrac{5}{2}, \sfrac{3}{2})$, mentre la soluzione ottima è $(1, 2)$. Dato che $1 \notin \{\lfloor \sfrac{5}{2} \rfloor, \lceil \sfrac{5}{2} \rceil\}$, si ha un controesempio dell'arrotondamento intero.\smallskip
+
+Nella figura è evidenziato il poliedro che corrisponde all'involucro convesso del reticolo intero $S$. Notiamo che questo \underline{poliedro} contiene \emph{tutte le soluzioni} del problema e gode della \emph{proprietà dell'interezza}: ne consegue che se utilizziamo tale poliedro come regione ammissibile di un problema di $PL$ con la stessa funzione obiettivo del problema originale otteniamo un problema di $PL$ con \emph{le stesse soluzioni ottime} del problema di $PLI$ originale (vedremo un caso più generale nel prossimo paragrafo).
+
+\subsubsection*{Convessificazione reticolo intero}
+Consideriamo l'involucro (o \emph{inviluppo}) convesso di $S$:
+\[\text{conv } S = \Bigg\{\sum_{i+1}^{n+1} \lambda_i x^i : \lambda_i \geq 0, \sum_{i = 1}^{n+1} \lambda_i = 1, x^i \in S\Bigg\} = \bigcap_{\underset{\large A \text{ convesso}}{A \supseteq S}} A\]
+
+
+
+\begin{Figure}
+\centering 
+\begin{tikzpicture}
+    \draw[fill = lightgray] (0,2.25) -- (3.5,1.38) -- (3.5,0) -- (0,0)-- cycle;
+    \draw[pattern = north west lines] (0,2) -- (1,2) -- (3,1) -- (3,0)-- (0,0) -- cycle;
+    \draw[-latex] (-1.5, 0) -- (5, 0);
+    \draw[-latex] (0,-0.5) -- (0, 3);
+    
+    \draw[gray, dotted] (-1,-0.5) -- (-1, 3);
+    \draw[gray, dotted] (1,-0.5) -- (1, 3);
+    \draw[gray, dotted] (2,-0.5) -- (2, 3);
+    \draw[gray, dotted] (3,-0.5) -- (3, 3);
+    \draw[gray, dotted] (4,-0.5) -- (4, 3);
+    
+    \draw[gray, dotted] (-1.5, 1) -- (5, 1);
+    \draw[gray, dotted] (-1.5, 2) -- (5, 2);
+   
+
+    
+    \node(d)[circle, draw, black, fill, inner sep=1pt] at (0,0) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (1,0) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (2,0) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (3,0) {};
+    
+    \node()[circle, draw, black, fill, inner sep=1pt] at (0,1) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (1,1) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (2,1) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (3,1) {};
+    
+    \node()[circle, draw, black, fill, inner sep=1pt] at (0,2) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (1,2) {};
+    
+    \node(a)[circle, draw, gray, fill, inner sep=1pt] at (0,2.25) {};
+    \node(b)[circle, draw, gray, fill, inner sep=1pt] at (3.5,1.38) {};
+    \node(c)[circle, draw, gray, fill, inner sep=1pt] at (3.5,0) {};
+    
+\end{tikzpicture}
+\captionof{figure}{
+\small Involucro convesso di $S$. 
+}
+\end{Figure}
+
+L'involucro convesso di S non è sempre un poliedro, come si vede dal seguente esempio.
+
+\begin{es}
+ $P = \{x \in \reals^2_+ : x_2 \geq \sqrt{2}x_1\}$. Si ha che $\text{conv }S$ coincide con il cono $C = \{x \in \reals^2_+ : x_2 > \sqrt 2x_1\}$, che non è un poliedro poiché non è chiuso.
+ \begin{multicols}{2}
+  
+ \begin{center}
+ \begin{tikzpicture}
+  \draw[-latex] (-.5, 0) -- (3, 0);
+  \draw[shading = axis,rectangle, left color=gray, right color=white,shading angle=180, color=white] (0, 0) -- (1.71321, 3) -- (0, 3) --cycle;
+ \draw[-latex] (0, -.5) -- (0, 3.5);
+   \draw (0, 0) -- (1.71321, 3);
+   
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (0,0) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (0,.5) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (0,1) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (0,1.5) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (0,2) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (0,2.5) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (0,3) {};
+    
+
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (.5,1) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (.5,1.5) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (.5,2) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (.5,2.5) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (.5,3) {};
+    
+    
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (1,2.5) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (1,2) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (1,3) {};
+    
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (1,2) {};
+    \node()[circle, draw, black, fill, inner sep=.5pt] at (1.5,3) {};
+ \end{tikzpicture}
+ \end{center}
+ 
+ \begin{center}
+ \begin{tikzpicture}
+  \draw[-latex] (-.5, 0) -- (3, 0);
+  \draw[shading = axis,rectangle, pattern = north east lines, left color=gray, right color=white,shading angle=180, color=white] (0, 0) -- (1.71321, 3) -- (0, 3) --cycle;
+ \draw[-latex] (0, -.5) -- (0, 3.5);
+   \draw[dotted, thick] (0, 0) -- (1.71321, 3);
+ \end{tikzpicture}
+ \end{center}
+ 
+ \end{multicols}
+
+ \begin{center}
+ \captionof{figure}{\small $P$ e $\text{conv} S$.}
+ \end{center}
+\footnotesize (Intuizione: ci sono punti a componenti intere arbitrariamente vicini al bordo mancante, ma nessun punto sul bordo ha componenti intere.)\normalsize
+ \begin{proof} \footnotesize \begin{itemize}
+                \item []
+                \item 
+  Si dimostra prima che $\text{conv } S \subseteq C$: se $x \in S$, allora $x \in P$, cioè $0\leq \sqrt{2} x_1 \leq x_2$. poiché $\sqrt 2$ è irrazionale e $x$ ha componenti intere si ha $0\leq \sqrt{2} x_1 < x_2$, cioè $x \in C$, quindi $S \subseteq C$. Poiché $C$ è convesso si ha anche $\text{conv }S \subseteq C$.
+  \item Dimostriamo ora che $C \in \text{conv }S$: consideriamo $y \in C$. Se $y = (0,0)$, allora $y \in S \subseteq \text{conv } S$. In caso contrario si ha:
+ \[0 < \frac{y_1}{y_2} < \frac{1}{\sqrt{2}}\]
+ 
+ Poiché $\mathbb{Q}$ è denso in $\reals$, è possibile trovare un razionale $\sfrac{a}{b}$ tale che:
+ \[0 < \frac{y_1}{y_2} < \frac{a}{b} < \frac{1}{\sqrt{2}}\]
+  
+  Quindi il vettore $x = (a, b)$ ha componenti intere e $0 < \sqrt{2} x_1 < x_2$, perciò $x \in S$. Analogamente tutti i vettori del tipo $(na, nb), n \in \naturals_+$ appartengono ad $S$, e quindi la semiretta:
+  \[r_1 = \Big\{x \in \reals^2_+ : x_1 = \frac{a}{b} x_2\Big\}\]
+  è contenuta in $\text{conv }S$. Inoltre è evidente che la semiretta:
+  \[r_2 =  \{x \in \reals^2_+ : x_1 = 0\}\]
+  è contenuta in $\text{conv }S$; allora questo contiene anche il cono generato dalle due semirette, cioè:
+  \[\Big\{ x \in \reals^2_+ : 0 \leq x_1 \leq \dfrac{a}{b} x_2 \Big\} \in \text{conv }S\]
+  
+  Perciò $0 < y_1 < \dfrac{a}{b}y_2$, quindi $y \in \text{cono }(r_1, r_2) \in \text{conv } S$
+               \end{itemize}
+ 
+ 
+ \end{proof}
+
+\end{es}
+\smallskip
+
+Se $S$ è finito oppure $A$ e $b$ sono a componenti intere si ha che $\text{conv }S$ è un poliedro con la proprietà dell'interezza, pertanto:
+\[\begin{matrix}
+   \max c\cdot x\\
+   x \in S
+  \end{matrix}\quad \equiv \quad\begin{matrix}
+   \max c\cdot x\\
+   x \in \text{conv }S
+  \end{matrix}
+\]
+
+ma caratterizzare $\text{conv }S$ tramite vincoli espliciti è estremamente difficile (la caratterizzazione è nota in pochi casi). Vi sono alcuni metodi per trovare iterativamente l'involucro convesso di $S$ ``tagliando'' porzioni della regione ammissibile, detti \emph{metodi dei piani di taglio}.
+\newpage
+\section{Metodi dei piani di taglio}
+\subsubsection*{Disuguaglianze valide}
+Siano $d \in \reals^n$ e $\gamma \in \reals$.
+
+$d\cdot x \geq \gamma$ si dice \emph{disuguaglianza valida} per \emph{S} se $d \cdot x \geq \gamma, \forall x \in S$, ovvero
+\[\{x \in \reals^n : Ax \leq b, d\cdot x \geq y\} \cap \integers^n = S\]
+
+\subsubsection*{Piani di taglio}
+Sia $\bar x \in S$ soluzione ottima del rilassamento continuo $(RC_P)$.
+
+Una disuguaglianza valida è detta \emph{piano di taglio} se: \[d \cdot \bar x < \gamma\]
+Ovvero se $\{x \in \reals^n : Ax \leq b, d\cdot x \geq \gamma\} \supseteq S$ approssima $S$ meglio di $P$ e ``taglia'' fuori la soluzione ottima del relativo rilassamento. 
+
+\begin{center}
+ 
+\begin{tikzpicture}
+    \fill[lightgray!40] (2,3) -- (4.5, -.5) -- (-1.5, -.5) -- (-1.5, 3);
+    
+    \draw[fill = lightgray] (0,2.25) -- (3.5,1.38) -- (3.5,0) -- (0,0)-- cycle;
+    \draw[-latex] (-1.5, 0) -- (5, 0);
+    \draw[-latex] (0,-0.5) -- (0, 3);
+    
+    \draw[gray, dotted] (-1,-0.5) -- (-1, 3);
+    \draw[gray, dotted] (1,-0.5) -- (1, 3);
+    \draw[gray, dotted] (2,-0.5) -- (2, 3);
+    \draw[gray, dotted] (3,-0.5) -- (3, 3);
+    \draw[gray, dotted] (4,-0.5) -- (4, 3);
+    
+    \draw[gray, dotted] (-1.5, 1) -- (5, 1);
+    \draw[gray, dotted] (-1.5, 2) -- (5, 2);
+   
+    
+    
+    \node(d)[circle, draw, black, fill, inner sep=1pt] at (0,0) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (1,0) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (2,0) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (3,0) {};
+    
+    \node()[circle, draw, black, fill, inner sep=1pt] at (0,1) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (1,1) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (2,1) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (3,1) {};
+    
+    \node()[circle, draw, black, fill, inner sep=1pt] at (0,2) {};
+    \node()[circle, draw, black, fill, inner sep=1pt] at (1,2) {};
+    
+    \node() at (3.7,1.6) {$\bar x$};
+    
+    \draw (2,3) -- (4.5,-.5);
+    
+    
+    \node(a)[circle, draw, gray, fill, inner sep=1pt] at (0,2.25) {};
+    \node(b)[circle, draw, black!80, fill, inner sep=1.1pt] at (3.5,1.38) {};
+    \node(c)[circle, draw, gray, fill, inner sep=1pt] at (3.5,0) {};
+    
+\end{tikzpicture}
+\captionof{figure}{
+\small Piano di taglio.
+}
+
+\end{center}
+
+\subsubsection*{Piani di taglio di Gomory}
+Consideriamo un problema in forma duale ed il suo rilassamento continuo:
+\[(D_I)\quad \begin{aligned}
+    \min\, &y\cdot b\\
+    &yA = c\\
+    &y\in \integers^m
+  \end{aligned}
+\quad \quad\rightsquigarrow \quad\quad
+(RC_D)\quad \begin{aligned}
+    \min\, &y\cdot b\\
+    &yA = c\\
+    &y\geq 0
+  \end{aligned}
+\]
+Con $A \in \reals^{m\times n}$\smallskip
+
+Siano $\bar y = (cA^{-1}_B, 0)$ soluzione ottima di base per ($RC_D$), e supponiamo $\bar y_r\notin \integers$ (se tale $r$ non esistesse $\bar y$ sarebbe soluzione ottima di $D_I$).\medskip
+\begin{multicols}{2}
+ 
+Sia $\tilde{A} = A_NA_B^{-1} \in \reals^{(m-n) \times n}$ 
+\begin{itemize}
+ \item []
+\end{itemize}
+
+(si numerino le righe con gli indici di $N$ e le colonne con quelli di $B$)
+\end{multicols}
+Vale la seguente proposizione:
+
+\begin{center}
+ 
+$\dsum_{j \in N}\{\tilde A_{jr}\} y_j \geq \{\bar y_r\}$ è un piano di taglio. 
+ 
+\end{center}
+
+
+(dove $\{\cdot\}$ denota la parte frazionaria.\footnote{Si ricordi che, ad esempio:
+
+$\{3.7\} = 3.7 - \lfloor 3.7 \rfloor = 0.7$, mentre $\{-3.7\} = \lceil 3.7 \rceil - 3.7 = 0.3$})
+\newpage
+\begin{proof}
+\begin{itemize}\small
+ \item[]
+ \item Si dimostra anzitutto che $\bar y$ non soddisfa la disuguaglianza ($\bar y_j = 0$ per $j \in N$).
+ \[\sum_{j \in N} \{\tilde A_{jr}\} \bar y_j = 0 < \{\bar y_r\} \quad\quad (\bar y_r \notin \integers \implies \{\bar y_r\} > 0)\]
+ \item Si dimostra quindi che la disuguaglianza è valida:
+ 
+ Sia $y \in Q \cap \integers^m$:
+ 
+ \[\begin{aligned}
+    y_BA_B + y_NA_N = c \implies y_B &= (c-y_N A_N)A^{-1}_B\\
+                                     &= cA^{-1}_B - y_N A_N A^{-1}_B\\
+                                     &= \bar y_N - y_N \underbrace{A_N A^{-1}_B}_{\tilde A}
+   \end{aligned}
+\]
+Da cui $y_r = \bar y_r - \dsum_{j \in N} \{\tilde A_{jr}\}y_j = [\bar y_r] + \{\bar y_r\} - \dsum_{j \in N} ([\tilde A_{jr}] + \{\tilde A_{jr}\})y_j$
+
+(dove $[.]$ denota la parte intera)
+
+\[-\{ \bar y_r \} + \dsum_{j \in N} \{ \tilde A_{jr} \} y_j = [\bar y_r] - \underbrace{y_r}_{\in \integers} - \dsum_{j \in N} [\tilde A_{jr}] \underbrace{y_j}_{\in \integers} \in \integers\]
+
+\[\{\tilde A_{jr}\}, y_i \geq 0 \implies -\{\bar y_r\} + \dsum_{j \in N} \{\tilde A_{jr}\} y_j \geq -\{ \bar y_r \} > -1\]
+
+Poiché $-\{\bar y_r\} + \sum\limits_{j \in N} \{\tilde A_{jr}\} y_j \in \integers$, risulta $-\{\bar y_r\} + \sum\limits_{j \in N} \{\tilde A_{jr}\} y_j \geq 0$
+
+Ovvero $\sum\limits_{j \in N} \{\tilde A_{jr}\} y_j \geq \{\bar y_r\}$ e $y$ soddisfa la disuguaglianza.
+\end{itemize}
+
+\end{proof}
+{\footnotesize
+
+Se $\bar y \cdot b \notin Z$, si può dimostrare analogamente che:
+
+\begin{center}
+ $\dsum_{j \in N} \{b_j - A_j A^{-1}_Bb_B\} y_j \geq \{\bar y \cdot b\}$ è un piano di taglio.\smallskip
+ 
+ (si utilizzi $y\cdot b = y_Bb_B + y_Nb_N = \bar y \cdot b + y_N(b_N - A_N A^{-1}_Bb_B)$)
+\end{center}
+
+
+
+}\bigskip
+
+\subsubsection*{Algoritmo di Gomory}
+Un algoritmo basato sui piani di taglio è l'algoritmo di Gomory:
+\begin{enumerate}
+ \item Calcolare $\bar y$ soluzione ottima di base di $\min\{y\cdot b : y \in   Q\}$
+ \item Se $y \in \integers^m$: STOP
+ \item Costruire piano di taglio $d \cdot x \geq \gamma$ relativo a $\bar y$
+ \item $Q := Q \cap \{x \in \reals^n : d \cdot x \geq \gamma\}$, ritornare a $(1)$
+\end{enumerate}
+L'algoritmo termina in un numero finito di passi se i piani sono scelti con opportune regole.
+\newpage
+\begin{es}
+
+    \begin{multicols}{2}
+\centering
+    $\begin{aligned}
+    \max \quad & &x_2&&&\\
+         & +3x_1  & +2x_2 & &\leq&& 6\\
+         & -3x_1  &+2x_2 & &\leq&& 0\\
+   \end{aligned}
+$\smallskip
+
+$ x_1, x_2  \geq 0 \quad x_1, x_2  \in \integers$
+\begin{itemize}
+ \item []
+\end{itemize}
+
+\begin{center}
+
+
+\begin{tikzpicture}[scale=1]
+ \draw[-latex] (-.5, 0) -- (3, 0);
+ \draw[-latex] (0, -.5) -- (0, 2);
+ \draw[dotted, thick] (-.5, -.75) -- (4/3,2);
+ \draw[dotted, thick] (7/3, -.5) -- (.6666, 2);
+ \draw[pattern = north east lines] (0,0) -- (2,0) -- (1,1) -- cycle;
+ \node()[circle, draw, black, fill, inner sep=1pt] at (0,0) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (1,1) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (1,0) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (2,0) {};
+ 
+ \path[-latex](2,1.2) edge node[above right]{$c$} (2,1.7);
+ 
+     \draw[gray, dotted] (1,-0.5) -- (1, 2);
+    \draw[gray, dotted] (2,-0.5) -- (2, 2);
+
+
+    \draw[gray, dotted] (-.5,1) -- (3, 1);
+\end{tikzpicture}
+\captionof{figure}{}
+\end{center}
+    \end{multicols}
+
+    
+    Per individuare un piano di taglio di Gomory bisogna portare il problema in forma duale:
+    \begin{multicols}{2}
+     
+    \[\begin{aligned}
+    \min \quad & &-y_2&&&&&\\
+         & +3y_1  & +2y_2 & &+y_3 & &\leq&& 6\\
+         & -3y_1  &+2y_2 & &+y_4 & &\leq&& 0\\
+   \end{aligned}\]
+   
+   \[y_1,\, y_2,\, y_3,\, y_4  \in \integers_+\]
+\[A = \begin{pmatrix}
+       3 & -3\\
+       2 & 2\\
+       1 & 0\\
+       0 & 1
+      \end{pmatrix}
+\quad\quad b = \begin{pmatrix}
+                0\\-1\\0\\0
+               \end{pmatrix}
+\]
+\[c = (6,0)\]
+    \end{multicols}
+Data la base $B = \{1, 2\}$ una soluzione ottima di base del rilassamento continuo è 
+
+$\bar y = (1, \sfrac{3}{2}, 0,0)$, quindi $r = 2$. Calcolo $\tilde A$:
+\[ A_B = \begin{pmatrix}
+          3 & -3\\2&2
+         \end{pmatrix} \quad\quad A_B =  \dfrac{1}{12}\begin{pmatrix}
+          2 & 3\\-2&3
+         \end{pmatrix}\]\[\tilde A = A_N A_B^{-1} = \begin{pmatrix}
+          1 & 0\\0&1
+         \end{pmatrix}\begin{pmatrix}
+          \sfrac{1}{6} & \sfrac{1}{4}\\-\sfrac{1}{6}&\sfrac{1}{4}
+         \end{pmatrix} = \overset{\scriptsize \begin{matrix}
+                                    1 & 2
+                                   \end{matrix}
+         }{\begin{pmatrix}
+          \sfrac{1}{6} & \sfrac{1}{4}\\-\sfrac{1}{6}&\sfrac{1}{4}
+         \end{pmatrix}} \scriptsize \begin{matrix}
+                                    3\\4
+                                   \end{matrix}
+ \]
+ 
+ Piano di taglio di Gomory: $\dfrac{1}{4}y_3 + \dfrac{1}{4} y_4 \geq \Bigg\{\dfrac{3}{2}\Bigg\} = \dfrac{1}{2}$ $\to$ $y_3 + y_4 \geq 2$\smallskip
+ 
+ 
+ E dato che: \[y_3 =6-3y_1 - 2y_2 =6-3x_1 - 2x_2 \hspace{1cm} y_4 = 3y_1 - 2y_2 = 3x_1 -2y_2\]
+ Possiamo riscrivere il taglio di Gomory come: \[\begin{aligned}
+y_3 + y_4 \geq 2 &\iff 6-4x_2 \geq 2\\
+                 &\iff x_2 \leq 1
+              \end{aligned}\]
+
+\end{es}
+
+\begin{center}
+
+
+\begin{tikzpicture}[scale=1.8]
+ \fill[lightgray!60] (-.5, 1) -- (3,1) -- (3,-.5) -- (-.5, -.5);
+ \draw (-.5, 1) -- (3,1);
+ \draw[-latex] (-.5, 0) -- (3, 0);
+ \draw[-latex] (0, -.5) -- (0, 2);
+ \draw[dotted, thick] (-.5, -.75) -- (4/3,2);
+ \draw[dotted, thick] (7/3, -.5) -- (.6666, 2);
+ \draw[pattern = north east lines] (0,0) -- (2,0) -- (1,1) -- cycle;
+ \node()[circle, draw, black, fill, inner sep=1pt] at (0,0) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (1,1) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (1,0) {};
+ \node()[circle, draw, black, fill, inner sep=1pt] at (2,0) {};
+ 
+
+    \draw[gray, dotted] (1,-0.5) -- (1, 2);
+    \draw[gray, dotted] (2,-0.5) -- (2, 2);
+
+
+
+ 
+ \path[-latex](2,1.2) edge node[above right]{$c$} (2,1.7);
+\end{tikzpicture}
+\captionof{figure}{}
+\end{center}
+
+\newpage
+\section{Metodi enumerativi}
+I problemi di $PLI$ con un numero finito di soluzioni, possono essere risolti \emph{per enumerazione}. In particolare considereremo problemi con variabili $x \in \{0,1\}^n$
+
+\subsubsection*{Albero di enumerazione totale}
+I metodi enumerativi si basano sull'\emph{albero di enumerazione totale}, un albero radicato in cui i nodi di un dato livello identificano una variabile e gli archi che portano al livello successivo i possibili valori della variabile. Le foglie dell'albero individuano univocamente tutte le possibili soluzioni (incluse quelle non ammissibili):
+\begin{center}
+ 
+\begin{forest}
+for tree={circle,draw, l sep=20pt, s sep=1cm}
+[$x_1$ 
+    [$x_2$, edge label={node[midway,left] {\scriptsize $x_1 = 0$}} 
+      [$x_3$,edge label={node[midway,left] {\scriptsize $0$}} 
+      [,rectangle, fill, gray, edge label={node[midway,left] {\scriptsize $0$}}]
+      [,rectangle,fill, gray,edge label={node[midway,right] {\scriptsize $1$}}]
+      ] 
+      [$x_3$, edge label={node[midway,right] {\scriptsize $1$}}
+      [,rectangle,fill, gray, edge label={node[midway,left] {\scriptsize $0$}}]
+      [,rectangle,fill, gray,edge label={node[midway,right] {\scriptsize $1$}}]
+      ] 
+    ]
+    [$x_2$, edge label={node[midway,right] {\scriptsize $x_1 = 1$}}
+      [$x_3$, edge label={node[midway,left] {\scriptsize $0$}}
+      [,rectangle,fill, gray, edge label={node[midway,left] {\scriptsize $0$}}]
+      [,rectangle,fill, gray,edge label={node[midway,right] {\scriptsize $1$}}]
+      ] 
+      [$x_3$, edge label={node[midway,right] {\scriptsize $1$}}
+      [,rectangle,fill, gray, edge label={node[midway,left] {\scriptsize $0$}}]
+      [,rectangle,fill, gray,edge label={node[midway,right] {\scriptsize $1$}}]
+      ]
+  ] 
+]
+\end{forest}
+
+
+\end{center}
+
+Ogni nodo individua un sottoproblema (=sottoalbero) in cui i valori di alcune variabili sono stati fissati.
+
+
+\subsection{Branch and Bound}
+Talvolta enumerare e controllare tutte le possibili soluzioni non è fattibile: esistono dei metodi che ci permettono di escludere molte delle soluzioni ammissibili, controllando soltanto alcune delle soluzioni del problema.\smallskip
+
+L'idea di base dei metodi \emph{branch and bound} è esplorare l'albero, chiudendo/potando quei rami che conducono a foglie che individuano soluzioni non ammissibili o a soluzioni ammissibili non migliori della migliore soluzione ammissibile nota (detta \emph{soluzione corrente}). Tramite l'esplorazione diretta o indiretta (tramite la potatura dei rami) di tutte le possibili soluzioni si individua quella ottima.\smallskip
+
+Poiché ciascun sottoproblema è analogo a quello di partenza (ma con meno variabili), serve conoscere una stima delle qualità delle soluzioni del sottoproblema che sia più facilmente calcolabile. A questo scopo si considerano opportuni \emph{rilassamenti} del problema, cioè problemi che contengono tutte le soluzioni ammissibili del (sotto)problema più altre, e la cui soluzione ottima sia ottenibile tramite algoritmi noti.\smallskip
+
+Uno specifico metodo branch and bound richiede:
+
+\begin{enumerate}
+ \item Una soluzione ammissibile di partenza, da costruire con una tecnica euristica ad hoc
+ \item Un rilassamento del problema
+ \item Regole di ramificazione (che mi servono a costruire l'albero dinamicamente)
+ \item Regole di potatura
+\end{enumerate}
+Posso potare quando:
+ \begin{enumerate}
+  \item[(a)] Il sottoalbero non contiene soluzioni ammissibili per il nostro problema;
+  \item[(b)] La soluzione ottima individuata per il rilassamento del sottoproblema è ammissibile per il probema di partenza
+  
+  (Sol. ottima individuata migliore della sol. amm. corrente $\to$ aggiorno la sol. amm. corrente)
+  \item[(c)] Il valore ottimo del rilassamento del sottoproblema è \emph{non migliore} del valore della soluzione ammissibile corrente;
+  
+  
+ \end{enumerate}
+  
+  Il caso (a) è ovvio. Nel caso (b) la soluzione ottima del rilassamento è la migliore soluzione ammissibile per il problema originale in tutto il sottoalbero considerato, quindi è inutile proseguire l'esplorazione di quel sottoalbero. Qualora fosse anche migliore della soluzione ammissibile corrente, si sostituisce quest'ultima con la soluzione trovata.  Nel caso (c) nessuna soluzione può essere migliore della soluzione corrente, quindi l'esplorazione del sottoalbero può terminare.\bigskip
+
+  Si osservi che problemi di massimizzazione (minimizzazione) il valore della soluzione corrente costituisce una valutazione inferiore (superiore) del valore ottimo e la soluzione ottima di un rilassamento (completata con le variabili di valore fissato) costituisce una valutazione superiore (inferiore).
+  
+\subsubsection*{Problema dello zaino}
+Ho $n$ oggetti, a ciascuno dei quali sono associati un peso $a_i$ ed un valore $c_i$. Lo zaino ha capacità $b>0$.
+
+\begin{center}
+ $\max c \cdot x$
+ 
+ $a x \leq b$
+ 
+ $x \in \{0, 1\}^{n}$
+\end{center}
+Utilizziamo come rilassamento il \emph{rilassamento continuo} del problema, mantenendo come vincolo $x \geq 0$, e consideriamolo nella coppia simmetrica col suo duale:\medskip
+
+\subsubsection*{Rilassamento continuo I}
+\begin{multicols}{2}
+ \begin{center}
+ $\max c \cdot x$
+ 
+ $a x \leq b$
+ 
+ $x \geq 0$
+\end{center}
+
+\begin{center}
+ $\min y \cdot b$
+ 
+ $y \geq c_i/a_i$
+ 
+  {\scriptsize$i = 0\hdots n$}
+ 
+ $y \geq 0$
+\end{center}
+\end{multicols}
+
+Il valore ottimo del duale è $\bar y = \max\Big\{\dfrac{c_i}{a_i}, i = 0\hdots n\Big\}$, quindi (per gli scarti complementari in forma simmetrica) la soluzione ottima del rilassamento è:
+
+\[\bar x_i = \begin{cases}
+              b/a_i &\text{se $i = k$}\\
+              0 &\text{se $i \neq k$}
+             \end{cases}
+\]
+In effetti $b/a_i$ è il \emph{benificio unitario} (o \textbf{rendimento}) di un oggetto.
+
+\subsubsection{Tecnica euristica dei rendimenti decrescenti}
+ Posso ordinare gli elementi per beneficio unitario decrescente ed inserirli in ordine escludendo quelli che causerebbero uno \emph{sforamento} della capacità. La soluzione ammissibile risultante $\hat x \in \{0,1\}^n$ è caratterizzata dalle seguenti proprietà:\smallskip
+
+\[(RD) \hspace{2cm \begin{aligned}
+                    &\hat x_1 = 1\\
+                    &\hat x_j = 1 \iff b-\dsum_{i = 1}^{j-1}a_i\hat x_i \geq a_j\hspace{1cm}j \geq 2
+                   \end{aligned}
+}\]
+
+Amaloghe tecniche euristiche di tipo ``greedy'' sui benefici decrescenti oppure sui pesi crescenti $\to$ non sono legate a rilassamenti ma in alcuni casi possono fornire soluzioni migliori.\medskip
+
+\subsubsection*{Rilassamento continuo II}
+ \begin{center}
+ $\max c \cdot x$
+ 
+ $a x \leq b$
+ 
+ $0 \leq x \leq 1$
+\end{center}
+
+Costituisce un ``miglior'' rilassamento continuo (in quanto la regione ammissibile è più piccola).\smallskip
+
+Supponendo $\dfrac{c_1}{a_1} \geq \dfrac{c_2}{a_2} \geq \hdots \geq \dfrac{c_n}{a_n}$, la soluzione ottima è data da $\bar x$ con :
+
+
+\[\bar x_j = \begin{cases}
+   1 &\text{se }j<h\\
+   \dfrac{b- \sum_{i = 1}^h a_i}{a_{h}}&\text{se }j=h+1\\
+   0 &\text{se }j>h+1\\
+  \end{cases}
+\]
+Dove $h \in \{1,\hdots,n-1\}$ è tale che $\sum\limits_{i = 1}^h a_i \leq b$, \quad$\sum\limits_{i = 1}^{h+1} a_i > b$ (ossia è il numero di elementi che inseriamo).
+
+\begin{proof} \footnotesize Proviamo l'ottimalità di $\bar x$:\smallskip
+
+Posto $\bar z_i = a_ix_i$ si ottiene: \[\bar z_j = \begin{cases}
+   a_i &\text{se }j<h\\
+   b- \sum_{i = 1}^h a_i&\text{se }j=h+1\\
+   0 &\text{se }j>h+1\\
+  \end{cases}\]
+ e il rilassamento continuo assume la forma:
+
+\[\begin{matrix}
+ \max \large\big(\large\sfrac{c_1}{a_1}\big) z_1 + \hdots + \big(\large\sfrac{c_n}{a_n}\big) z_n\\
+ z_1 + \hdots + z_n \leq b\\
+ 0 \leq z_i \leq a_i, \, i = 1 \hdots n    \end{matrix} \quad\quad \overset{\text{\scriptsize forma}}{\underset{\text{\scriptsize matriciale}}{\longrightarrow}} \quad\quad   \begin{matrix}
+ \max \hat c \cdot z\\
+ \hat A z \leq b\\
+ z \geq 0    \end{matrix}\]
+con $\hat c_i = \dfrac{c_i}{a_i}$, $\hat A = \scriptsize\begin{pmatrix}
+                                            1 &\hdots &1\\
+                                            &I&
+                                           \end{pmatrix}, \hat b = \begin{pmatrix}
+                                                                        b\\a_1\\\vdots\\a_n
+
+                                                                   \end{pmatrix}
+$\smallskip
+
+Il cui duale (simmetrico) risulta essere:
+
+\[\begin{matrix}
+    \max w \cdot \hat b\\w\hat A \geq \hat c\\w \geq 0
+  \end{matrix}\hspace{.5cm}\overset{\text{\scriptsize $w = (y, v) \in R \times R^n$}}{\longrightarrow}\hspace{.5cm} \begin{matrix}
+    \min yb + \sum\limits_{i = 1}^n a_i v_i \\ y + v_i \geq \dfrac{c_i}{a_i} \quad i = 1 \hdots n \\y \geq 0, v_i \geq 0, \quad i = 1 \hdots n
+  \end{matrix}
+\]
+
+Le condizioni degli scarti complementari (in forma simmetrica) sono pertanto:
+
+\[ \begin{matrix}
+    w(\hat b - \hat A z) = 0\\
+    (w\hat A - \hat c)z = 0
+   \end{matrix} \hspace{.5cm} \iff \hspace{.5cm}
+   \begin{aligned}
+    &y(z_1 + \hdots + z_n - b) = 0& (1)\\
+    &v_i(a_i - z_i) = 0 & (2)\\
+    &(y+v_i-c_i/a_i)z_i = 0 & (3)
+   \end{aligned}
+ \]
+ 
+ Per dimostrare l'ottimalità di $\bar z$ (e quindi di $\bar x$) bisogna trovare $\bar w = (\bar y, \bar v)$ ammissibile per il problema duale tale che $\bar z$ e $\bar w$ soddisfino (1), (2), (3):
+ 
+ \begin{itemize}
+  \item $\bar z_1 + \hdots + \bar z_n = b \implies$ (1) è verificata 
+  \item $\bar z_i < a_i$, $i \geq h+1 \implies$ (2) è verificata se $\bar v_{h+1} = \hdots = \bar v_n = 0$
+  \item $\bar z_i > 0$, $i \leq h \implies$ (3) è verificata se $\bar v_i = c_i/a_i - \bar y$, $i = i\hdots h$
+ \end{itemize}
+Un tale $(\bar y, \bar v)$ è ammissibile se e solo se $\dfrac{c_{h+1}}{a_{h+1}}\leq \bar y \leq \dfrac{c_h}{a_h}$
+
+Infatti: 
+\begin{center}
+ 
+$\bar y \leq \dfrac{c_h}{a_h} \implies \bar y \leq \dfrac{c_i}{a_i}$, $i \leq h \implies v_i \geq 0$, $i \leq h$\smallskip
+
+
+$\bar y \geq \dfrac{c_{h+1}}{a_{h+1}} \implies \bar y + \bar v_i - \dfrac{c_i}{a_i} = \bar y - \dfrac{c_i}{a_i} \geq \dfrac{c_{h+1}}{a_{h+1}} - \dfrac{c_i}{a_i} \geq 0$, $i \geq h+1$
+\end{center}
+
+mentre $\bar y + \bar v_i - \dfrac{c_i}{a_i} = 0$ per $i = 1 \hdots h$.
+
+\end{proof}
+
+\subsubsection{Branch And Bound per Zaino}
+
+Usiamo la tecnica euristica dei rendimenti decrescenti per individuare una soluzione ammissibile iniziale (in alternativa possiamo utilizzare altre tecniche ``greedy''), ed il \emph{Rilassamento II} come rilassamento per il metodo Branch and Bound. \smallskip
+
+Come possibili \emph{regole di ramificazione} possiamo scegliere di ramificare sulla variabile con:
+\begin{itemize}
+ \item Valore frazionario nella soluzione ottima del rilassamento continuo
+ \item Miglior rendimento
+ \item Peggior rendimento
+\end{itemize}
+
+\begin{es}
+Si ha il problema dello zaino con valori: $c = (11, 23, 18, 6)$, pesi $a = (7, 6, 3, 2)$ e capacità $b = 8$:
+
+\begin{center}
+ $\max \quad11x_1 + 23 x_2 + 18 x_3 + 6x_4$\smallskip
+ 
+ $7x_1 + 6x_2 + 3x_3 + 2x_4 \leq 8$\smallskip
+ 
+ $x_1, x_2, x_3, x_4 \in \{0, 1\}$
+\end{center}
+
+Calcolo i rendimenti: $(\sfrac{11}{7}, \sfrac{23}{6}, 6, 3)$ ed ordino gli elementi per rendimento decrescente: $(x_3, x_2, x_4, x_1)$. Cerco una soluzione ammissibile: \smallskip
+\begin{enumerate}[-]
+ \item Aggiungo l'elemento 3, il cui peso è $3$. 
+ \item Provo ad aggiungere l'elemento 2, ma non posso perché $3+6>8$
+ \item Aggiungo l'elemento 4, peso raggiunto $5$
+ \item Non posso aggiungere l'elemento 1, $5+7 > 8$
+\end{enumerate}
+$\to$ La soluzione ammissibile trovata è $(0,0,1,1)$, di \underline{valore 24}, \textbf{stima inferiore} della sol. ottima.\smallskip
+
+
+Cerchiamo quindi una soluzione ottima al rilassamento II, per averne anche una stima superiore:\smallskip
+
+\begin{enumerate}[-]
+ \item Inseriamo nell'ordine di prima: Inserisco l'elemento 3, che entra per intero nello zaino (nuova capacità $8-3 = 5$).
+ \item Cerco di inserire l'elemento 2, che non entra per intero nello zaino, quindi ne prendo una frazione: $x_2 = \sfrac{5}{6}$
+ \item Soluzione ottima: $(0, \sfrac{5}{6}, 1, 0)$, di valore 37 + $\sfrac{1}{6}$. Possiamo considerare \underline{$37$} come \textbf{stima superiore} perché il valore ottimo del problema deve essere intero.
+\end{enumerate}
+
+Abbiamo perciò una \emph{valutazione inferiore} $V_I = 24$ ed una \emph{valutazione superiore} $\lfloor V_S \rfloor = 37$\smallskip
+
+Dobbiamo definire una regola di ramificazione: possiamo scegliere, ad esempio, di ramificare in ordine di rendimento crescente.\smallskip
+
+Ramifico perciò in base al valore di $x_3$, ottenendo i sottoproblemi $P_1$ e $P_2$.
+
+\begin{center}
+
+\begin{tikzpicture}[scale = 1]
+    \node()[] at (0,.7){\small  l $\cnot{24} \to 29$, 37};
+    \node(P)[circle, draw] at (0,0){\small $P$};
+    \node(P1)[circle, draw] at (-1.5,-1.5){\small $P_1$};
+    \node(P2)[circle, draw, fill = lightgray] at (1.5,-1.5){\small $P_2$};
+    
+    \path[-latex] (P) edge node[above left]{\small $x_3 = 1$} (P1);
+    \path[-latex] (P) edge node[above right]{\small $x_3 = 0$} (P2);
+    
+    \node () at (P2){\Huge\bfseries/};
+    
+\end{tikzpicture}
+\captionof{figure}{\small Poto $P_2$ per ammissibilità}
+
+\end{center}
+ \begin{itemize}
+  \item La soluzione ottima del rilassamento di $P_1$ è sempre $(0, \sfrac{5}{6}, 1, 0)$, $\lfloor$valore$\rfloor=37$\smallskip
+
+\item La soluzione ottima del rilassamento di $P_2$ è $(0, 1, 0, 1)$ (ammissibile!), valore $=29 > 24$
+
+$\to $ Poto $P_2$ (ammissibilità)
+ 
+$\to $ soluzione ammiss. corrente$ := 29$
+
+ \end{itemize}
+
+\begin{center}
+ 
+\begin{tikzpicture}[scale = 1]
+    \node()[] at (0,.7){\small 29, 37};
+    \node(P)[circle, draw] at (0,0){\small$P$};
+    \node(P1)[circle, draw] at (-1.5,-1.5){\small$P_1$};
+    \node(P2)[circle, draw, fill = lightgray] at (1.5,-1.5){\small$P_2$};
+    \node(P3)[circle, draw, fill = lightgray] at (-3,-3){\small$P_3$};
+    \node(P4)[circle, draw, fill = lightgray] at (0,-3){\small$P_4$};
+    
+    \path[-latex] (P) edge node[above left]{\small$x_3 = 1$} (P1);
+    \path[-latex] (P) edge node[above right]{\small$x_3 = 0$} (P2);
+    
+    \path[-latex] (P1) edge node[above left]{\scriptsize$x_2 = 1$} (P3);
+    \path[-latex] (P1) edge node[above right]{\scriptsize$x_2 = 0$} (P4);
+    
+    \node () at (P2){\Huge\bfseries/};
+    \node () at (P3){\Huge\bfseries/};
+    \node () at (P4){\Huge\bfseries/};
+    
+    
+\end{tikzpicture}
+\captionof{figure}{\small Poto $P_3$ per inammissibilità e $P_4$ per valore non migliore}
+\end{center}
+
+\begin{itemize}
+ \item $P_3$ non contiene soluzioni ammissibili per P: poto
+
+\item La soluzione ottima del rilassamento di $P_4$ è 
+$(\sfrac{3}{7}, 0, 1, 1)$, valore $=28 < 29$, poto
+$\to$ \textbf{ho potato tutto}.
+
+$\implies$ soluzione ottima $P$: $\hat x = (0, 1, 0, 1)$
+
+\end{itemize}
+
+
+\end{es}
+
+
+
+\section{Problema del commesso viaggiatore}
+Un commesso viaggiatore vuole visitare $n$ città (tornando alla fine alla città di partenza) minimizzando il percorso complessivo. Se le distanze tra le città soddisfano la disuguaglianza triangolare, la soluzione ottima passa una sola volta per ogni città
+\smallskip
+
+Matematicamente si può astrarre il seguente problema: dato un grafo non orientato con un costo su ciascun arco, trovare il \emph{ciclo hamiltoniano} di costo minimo (un ciclo hamiltoniano è un ciclo che passa per ogni nodo esattamente una volta -- toccando tutti i nodi del grafo).
+
+\subsubsection{K-alberi}
+
+Scelto un nodo $k$, un ciclo hamiltoniano è un albero di copertura per il grafo privato di $k$ e di tutti gli archi incidenti in $k$ unito a due archi incidenti in $k$.
+
+Un grafo del genere (albero di copertura di costo minimo + due archi incidenti in $k$ si dice \emph{k-albero}).\smallskip
+
+Si noti che ogni ciclo hamiltoniano è un $k$-albero, ma non viceversa.\smallskip
+\begin{es}
+\begin{itemize}
+ \item []
+\end{itemize}
+
+ \begin{center}
+\begin{tikzpicture}
+    \node[circle, draw] (1) at (1,2) {1};
+    \node[circle, draw] (2) at (0,1) {2};
+    \node[circle, draw] (3) at (2,1) {3};
+    \node[circle, draw] (4) at (1,0) {4};
+    
+    \draw (1) -- (2);
+    \draw (2) -- (3);
+    \draw (2) -- (4);
+    \draw (3) -- (4);
+    
+\end{tikzpicture}\smallskip
+
+\captionof{figure}{$3$-albero che non è un ciclo hamiltoniano}
+\end{center}
+\end{es}
+
+\textbf{Prop:} Un ciclo hamiltoniano è un $k$-albero in cui ogni nodo ha grado 2 (cioè due archi incidenti)
+
+\subsubsection{Branch and Bound per TSP simmetrico}
+
+
+Supponiamo che il grafo sia completo (TSP simmetrico), cioè esista l'arco $(i, j)$ per ogni coppia di nodi $i$ e $j$.\smallskip
+
+Poiché un ciclo hamiltoniano è un insieme di archi, si possono considerare le variabili binarie:
+\[x_{ij}=\begin{cases}1 &\text{se $(i, j)$ fa parte del ciclo} \\ 0 &\text{altrimenti}\end{cases}\]
+
+per costruire l'albero di enumerazione totale.
+
+\subsubsection*{Tecnica euristica del ``nodo più vicino''}
+
+Poiché il grafo è completo, ogni permutazione dei nodi individua un ciclo hamiltoniano. A partire da un qualsiasi nodo dato, una permutazione si ottiene visitando i nodi in una sequenza tale che il nodo che viene visitato sia, tra quelli non ancora visitati, quello a minor distanza dall'ultimo nodo visitato. Sia $V = \{i_1, \hdots, i_k\}$ l'insieme dei nodi già visitati:
+
+\begin{center}
+$i_{k+1} \text{ soddisfa: }\begin{cases} i_{k+1} \notin V \\ c_{i_k i_{k+1}}=min\{c_{i_k j}:j \notin V\}\end{cases}$
+\end{center}
+
+\paragraph{Rilassamento}
+$k$-albero di costo minimo.
+
+Questo può essere individuato risolvendo il problema dell'albero di copertura di costo minimo sul sottografo ottenuto rimuovendo $k$ e gli archi in esso incidenti ed aggiungendo a tale albero i due archi di costo minimo incidenti in $k$.
+
+
+\begin{es}
+\begin{itemize}
+ \item []
+\end{itemize}
+
+\begin{center}
+
+    \begin{tikzpicture}[scale = 1.8]
+        \node[circle, draw] (1) at (0, 2.6) {1};
+        \node[circle, draw] (2) at (1.7, 1.5) {2};
+        \node[circle, draw] (3) at (1, 0) {3};
+        \node[circle, draw] (4) at (-1, 0) {4};
+        \node[circle, draw] (5) at (-1.7, 1.5) {5};
+        
+        \path (1) edge node [rectangle, fill = white] {\small 26} (2);
+        \path (1) edge node [rectangle, fill = white, pos = .55] {\small 20} (3);
+        \path (1) edge node [rectangle, fill = white, pos = .55] {\small 24} (4);
+        \path (1) edge node [rectangle, fill = white] {\small 19} (5);
+        
+        \path (2) edge node [rectangle, fill = white] {\small 34} (3);
+        \path (2) edge node [rectangle, fill = white,pos = .5,inner sep=1] {\small 23} (4);
+        \path (2) edge node [rectangle, fill = white, pos = .5] {\small 22} (5);
+        
+        \path (3) edge node [rectangle, fill = white] {\small 27} (4);
+        \path (3) edge node [rectangle, fill = white, pos = .5,inner sep=1] {\small 21} (5);
+        
+        \path (4) edge node [rectangle, fill = white] {\scriptsize 32} (5);
+        
+    \end{tikzpicture}
+    \captionof{figure}{}
+\end{center}
+\end{es}
+
+\begin{multicols}{2}
+ \textit{Soluzione ammissibile iniziale}:
+ 
+
+ \begin{center}
+
+    \begin{tikzpicture}[scale = 1]
+        \node[circle, draw] (1) at (0, 2.6) {1};
+        \node[circle, draw] (2) at (1.7, 1.5) {2};
+        \node[circle, draw] (3) at (1, 0) {3};
+        \node[circle, draw] (4) at (-1, 0) {4};
+        \node[circle, draw] (5) at (-1.7, 1.5) {5};
+        
+        \path (1) edge node [rectangle, fill = white, pos = .2] {\small 20} (3);
+        
+        \path (1) edge node [rectangle, fill = white] {\small 19} (5);
+        
+        
+        \path (2) edge node [rectangle, fill = white,pos = .2,inner sep=1] {\small 23} (4);
+        \path (2) edge node [rectangle, fill = white, pos = .65] {\small 22} (5);
+        
+        \path (3) edge node [rectangle, fill = white] {\small 27} (4);
+
+        
+        
+    \end{tikzpicture}
+    \captionof{figure}{}
+\end{center}
+ (algoritmo nodo più vicino a partire da 2) \smallskip
+
+ Il costo della soluzione è 111; questa è una valutazione superiore del valore ottimo.
+ 
+ \textit{Rilassamento:}
+ 
+
+ \begin{center}
+
+    \begin{tikzpicture}[scale = 1]
+        \node[circle, draw] (1) at (0, 2.6) {1};
+        \node[circle, draw] (2) at (1.7, 1.5) {2};
+        \node[circle, draw] (3) at (1, 0) {3};
+        \node[circle, draw] (4) at (-1, 0) {4};
+        \node[circle, draw] (5) at (-1.7, 1.5) {5};
+        
+        \path (1) edge node [rectangle, fill = white, pos = .2] {\small 20} (3);
+        
+        \path (1) edge node [rectangle, fill = white] {\small 19} (5);
+        
+        
+        \path (2) edge node [rectangle, fill = white,pos = .2,inner sep=1] {\small 23} (4);
+        \path (2) edge node [rectangle, fill = white, pos = .65] {\small 22} (5);
+        
+
+        \path (3) edge node [rectangle, fill = white, pos = .5,inner sep=1] {\small 21} (5);
+        
+    \end{tikzpicture}
+    \captionof{figure}{}
+    
+\end{center}
+
+(3-albero di costo minimo) \smallskip
+
+
+ Il costo del rilassamento è 105; questa è una valutazione inferiore del valore ottimo.
+\end{multicols}
+
+Ramifichiamo su $x_{15}$ (arco di costo minore):
+
+\begin{multicols}{2}
+
+\begin{center}
+ 
+\begin{tikzpicture}[scale = 1]
+    \node(P)[circle, draw] at (0,0){\small $P$};
+    \node(P1)[circle, draw] at (-1.5,-1.5){\small $P_1$};
+    \node(P2)[circle, draw, fill = lightgray] at (1.5,-1.5){\small $P_2$};
+    
+    \path[-latex] (P) edge node[above left]{\small $x_{15} = 1$} (P1);
+    \path[-latex] (P) edge node[above right]{\small $x_{15} = 0$} (P2);
+    
+    \node () at (P2){\Huge\bfseries/};
+    
+\end{tikzpicture}\smallskip
+\captionof{figure}{}
+\end{center}
+
+  \begin{center}
+
+    \begin{tikzpicture}[scale = .8]
+        \node[circle, draw] (1) at (0, 2.6) {1};
+        \node[circle, draw] (2) at (1.7, 1.5) {2};
+        \node[circle, draw] (3) at (1, 0) {3};
+        \node[circle, draw] (4) at (-1, 0) {4};
+        \node[circle, draw] (5) at (-1.7, 1.5) {5};
+        
+       \draw (1) -- (3);
+       \draw (5) -- (3);
+       \draw (5) -- (2);
+       \draw (2) -- (4);
+       \draw (4) -- (1);
+        
+    \end{tikzpicture}
+    \captionof{figure}{Ramo $x_{15}$ = 0}
+    
+\end{center}
+
+
+\end{multicols}
+
+\begin{itemize}
+ \item Poto il ramo $x_{15} = 0$ poiché il $3$-albero di costo minimo con $x_{15} = 0$ è anche un ciclo hamiltoniano.
+ \item Nel caso $x_{15} = 1$ si ha un 3-albero di costo minimo di costo 105 (lo stesso del rilassamento iniziale)
+\end{itemize}
+
+Ramifico su $x_{13}$:
+
+\begin{itemize}
+ \item $x_{13} = 0$: Il 3-albero di costo minimo è:
+ 
+
+  \begin{center}
+
+    \begin{tikzpicture}[scale = 1]
+        \node[circle, draw] (1) at (0, 2.6) {1};
+        \node[circle, draw] (2) at (1.7, 1.5) {2};
+        \node[circle, draw] (3) at (1, 0) {3};
+        \node[circle, draw] (4) at (-1, 0) {4};
+        \node[circle, draw] (5) at (-1.7, 1.5) {5};
+        
+        
+        \path (1) edge node [rectangle, fill = white] {\small 19} (5);
+        
+        
+        \path (2) edge node [rectangle, fill = white,pos = .2,inner sep=1] {\small 23} (4);
+        \path (2) edge node [rectangle, fill = white, pos = .65] {\small 22} (5);
+        
+
+        \path (3) edge node [rectangle, fill = white, pos = .5,inner sep=1] {\small 21} (5);
+        \path (3) edge node [rectangle, fill = white] {\small 27} (4);
+    \end{tikzpicture}\smallskip
+    
+    \captionof{figure}{}
+    
+\end{center}
+
+
+
+Poiché 112 $> V_S$, nel sottoalbero non ci possono essere cicli hamiltoniani migliori della soluzione corrente, perciò potiamo.
+ 
+
+\item $x_{13} = 1$: Il 3-albero di costo minimo è lo stesso dei passi precedenti, di costo  $105<V_S$
+\end{itemize}
+
+\begin{center}
+ 
+\begin{tikzpicture}[scale = 1]
+    \node(P)[circle, draw] at (0,0){\small$P$};
+    \node(P1)[circle, draw] at (-1.5,-1.5){\small$P_1$};
+    \node(P2)[circle, draw, fill = lightgray] at (1.5,-1.5){\small$P_2$};
+    \node(P3)[circle, draw] at (-3,-3){\small$P_3$};
+    \node(P4)[circle, draw, fill = lightgray] at (0,-3){\small$P_4$};
+    
+    \path[-latex] (P) edge node[above left]{\small$x_{15} = 1$} (P1);
+    \path[-latex] (P) edge node[above right]{\small$x_{15} = 0$} (P2);
+    
+    \path[-latex] (P1) edge node[above left]{\scriptsize$x_{13} = 1$} (P3);
+    \path[-latex] (P1) edge node[above right]{\scriptsize$x_{13} = 0$} (P4);
+    
+    \node () at (P2){\Huge\bfseries/};
+    \node () at (P4){\Huge\bfseries/};
+    
+    
+\end{tikzpicture}
+\captionof{figure}{\small Poto $P_3$ per inammissibilità e $P_4$ per valore non migliore}
+\end{center}
+
+Ramifichiamo su $x_{35}$:
+\begin{itemize}
+ \item $x_{35} = 1$: Nel sottoalbero non ci sono cicli hamiltoniani: potiamo
+ \item $x_{35} = 0$: Ciclo hamiltoniano di costo $111>V_S$, si può potare e l'albero è chiuso. La soluzione ammissibile corrente è il ciclo hamiltoniano di costo minimo.
+\end{itemize}
+
+  \begin{center}
+
+    \begin{tikzpicture}[scale = 1]
+        \node[circle, draw] (1) at (0, 2.6) {1};
+        \node[circle, draw] (2) at (1.7, 1.5) {2};
+        \node[circle, draw] (3) at (1, 0) {3};
+        \node[circle, draw] (4) at (-1, 0) {4};
+        \node[circle, draw] (5) at (-1.7, 1.5) {5};
+        
+        
+        \path (1) edge node [rectangle, fill = white] {\small 19} (5);
+        
+        
+        \path (2) edge node [rectangle, fill = white,pos = .2,inner sep=1] {\small 23} (4);
+        \path (2) edge node [rectangle, fill = white, pos = .65] {\small 22} (5);
+        
+
+        \path (3) edge node [rectangle, fill = white] {\small 27} (4);
+        \path (1) edge node [rectangle, fill = white, pos = .2] {\small 20} (3);
+    \end{tikzpicture}\smallskip
+    
+    \captionof{figure}{$x_{35} = 0$}
+    
+\end{center}
+
+\newpage
+\pagestyle{empty}
+\section*{Bibliografia}
+
+\begin{itemize}
+ \item Note manoscritte del professor Bigi: 
+ 
+ \texttt{http://pages.di.unipi.it/bigi/dida/rob/2122/appunti/capitolo4.pdf}
+ 
+ \item Adatt. da \emph{Pappalardo, Passacantando -- ``Ricerca Operativa''}: dimostrazione esempio (4.3)
+\end{itemize}\bigskip
+
+\vspace*{\fill}
+Il codice \LaTeX \, di questa trascrizione è reperibile al seguente indirizzo:\medskip
+
+
+\texttt{https://github.com/mell-o-tron/RO-Capitolo4}\medskip
+
+In seguito alle inevitabili segnalazioni di errori allo stesso indirizzo si troverà un errata corrige.
+\end{document}
