@@ -361,7 +361,8 @@ L'involucro convesso di S non è sempre un poliedro, come si vede dal seguente e
                 \item []
                 \item 
   Si dimostra prima che $\text{conv } S \subseteq C$: se $x \in S$, allora $x \in P$, cioè $0\leq \sqrt{2} x_1 \leq x_2$. poiché $\sqrt 2$ è irrazionale e $x$ ha componenti intere si ha $0\leq \sqrt{2} x_1 < x_2$, cioè $x \in C$, quindi $S \subseteq C$. Poiché $C$ è convesso si ha anche $\text{conv }S \subseteq C$.
-  \item Dimostriamo ora che $C \in \text{conv }S$: consideriamo $y \in C$. Se $y = (0,0)$, allora $y \in S \subseteq \text{conv } S$. In caso contrario si ha:
+  
+  \item Dimostriamo ora che $C \subseteq \text{conv }S$: consideriamo $y \in C$. Se $y = (0,0)$, allora $y \in S \subseteq \text{conv } S$. In caso contrario si ha:
  \[0 < \frac{y_1}{y_2} < \frac{1}{\sqrt{2}}\]
  
  Poiché $\mathbb{Q}$ è denso in $\reals$, è possibile trovare un razionale $\sfrac{a}{b}$ tale che:
@@ -372,9 +373,9 @@ L'involucro convesso di S non è sempre un poliedro, come si vede dal seguente e
   è contenuta in $\text{conv }S$. Inoltre è evidente che la semiretta:
   \[r_2 =  \{x \in \reals^2_+ : x_1 = 0\}\]
   è contenuta in $\text{conv }S$; allora questo contiene anche il cono generato dalle due semirette, cioè:
-  \[\Big\{ x \in \reals^2_+ : 0 \leq x_1 \leq \dfrac{a}{b} x_2 \Big\} \in \text{conv }S\]
+  \[\Big\{ x \in \reals^2_+ : 0 \leq x_1 \leq \dfrac{a}{b} x_2 \Big\} \subseteq \text{conv }S\]
   
-  Perciò $0 < y_1 < \dfrac{a}{b}y_2$, quindi $y \in \text{cono }(r_1, r_2) \in \text{conv } S$
+  Dato che $0 < y_1 < \dfrac{a}{b}y_2$, vale $y \in \text{cono }(r_1, r_2) \subseteq \text{conv } S$
                \end{itemize}
  
  
@@ -508,7 +509,7 @@ $\{3.7\} = 3.7 - \lfloor 3.7 \rfloor = 0.7$, mentre $\{-3.7\} = \lceil 3.7 \rcei
  \[\begin{aligned}
     y_BA_B + y_NA_N = c \implies y_B &= (c-y_N A_N)A^{-1}_B\\
                                      &= cA^{-1}_B - y_N A_N A^{-1}_B\\
-                                     &= \bar y_N - y_N \underbrace{A_N A^{-1}_B}_{\tilde A}
+                                     &= \bar y_B - y_N \underbrace{A_N A^{-1}_B}_{\tilde A}
    \end{aligned}
 \]
 Da cui $y_r = \bar y_r - \dsum_{j \in N} \{\tilde A_{jr}\}y_j = [\bar y_r] + \{\bar y_r\} - \dsum_{j \in N} ([\tilde A_{jr}] + \{\tilde A_{jr}\})y_j$
@@ -517,7 +518,7 @@ Da cui $y_r = \bar y_r - \dsum_{j \in N} \{\tilde A_{jr}\}y_j = [\bar y_r] + \{\
 
 \[-\{ \bar y_r \} + \dsum_{j \in N} \{ \tilde A_{jr} \} y_j = [\bar y_r] - \underbrace{y_r}_{\in \integers} - \dsum_{j \in N} [\tilde A_{jr}] \underbrace{y_j}_{\in \integers} \in \integers\]
 
-\[\{\tilde A_{jr}\}, y_i \geq 0 \implies -\{\bar y_r\} + \dsum_{j \in N} \{\tilde A_{jr}\} y_j \geq -\{ \bar y_r \} > -1\]
+\[\{\tilde A_{jr}\}, y_j \geq 0 \implies -\{\bar y_r\} + \dsum_{j \in N} \{\tilde A_{jr}\} y_j \geq -\{ \bar y_r \} > -1\]
 
 Poiché $-\{\bar y_r\} + \sum\limits_{j \in N} \{\tilde A_{jr}\} y_j \in \integers$, risulta $-\{\bar y_r\} + \sum\limits_{j \in N} \{\tilde A_{jr}\} y_j \geq 0$
 
@@ -527,7 +528,7 @@ Ovvero $\sum\limits_{j \in N} \{\tilde A_{jr}\} y_j \geq \{\bar y_r\}$ e $y$ sod
 \end{proof}
 {\footnotesize
 
-Se $\bar y \cdot b \notin Z$, si può dimostrare analogamente che:
+Se $\bar y \cdot b \notin \mathbb Z$, si può dimostrare analogamente che:
 
 \begin{center}
  $\dsum_{j \in N} \{b_j - A_j A^{-1}_Bb_B\} y_j \geq \{\bar y \cdot b\}$ è un piano di taglio.\smallskip
@@ -1318,6 +1319,8 @@ Ramifichiamo su $x_{35}$:
 \end{itemize}\bigskip
 
 \vspace*{\fill}
+Versione aggiornata al \oldstylenums{13/09/2022}\smallskip
+
 Il codice \LaTeX \, di questa trascrizione è reperibile al seguente indirizzo:\medskip
 
 
